@@ -10,6 +10,7 @@
 set -e
 set -x
 
+echo $CUDA_VISIBLE_DEVICES
 DOWNLOAD_NAME=models_class1_pan
 SCRATCH_DIR=${TMPDIR-/tmp}/mhcflurry-downloads-generation
 SCRIPT_ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
@@ -17,7 +18,8 @@ SCRIPT_DIR=$(dirname "$SCRIPT_ABSOLUTE_PATH")
 
 if [ "$1" != "cluster" ]
 then
-    GPUS=$(nvidia-smi -L 2> /dev/null | wc -l) || GPUS=0
+    #GPUS=$(nvidia-smi -L 2> /dev/null | wc -l) || GPUS=0
+    GPUS=$(($(echo $CUDA_VISIBLE_DEVICES | tr -cd , | wc -c) + 1)) || GPUS=0
     echo "Detected GPUS: $GPUS"
 
     PROCESSORS=$(getconf _NPROCESSORS_ONLN)
@@ -93,7 +95,7 @@ do
         --allele-sequences "$ALLELE_SEQUENCES" \
         --pretrain-data "$(mhcflurry-downloads path random_peptide_predictions)/predictions.csv.bz2" \
         --held-out-measurements-per-allele-fraction-and-max 0.25 100 \
-        --num-folds 4 \
+        --num-folds 1 \
         --hyperparameters "$HYPERPARAMETERS" \
         --out-models-dir $(pwd)/models.unselected.${kind} \
         --worker-log-dir "$SCRATCH_DIR/$DOWNLOAD_NAME" \

@@ -317,7 +317,7 @@ def initialize_training(args):
         (df.peptide.str.len() >= 8) & (df.peptide.str.len() <= 15)
     ]
     print("Subselected to 8-15mers: %s" % (str(df.shape)))
-    
+
     df = df.loc[~df.measurement_value.isnull()]
     print("Dropped NaNs: %s" % (str(df.shape)))
 
@@ -359,6 +359,14 @@ def initialize_training(args):
     allele_encoding = AlleleEncoding(
         alleles=allele_sequences_in_use.index.values,
         allele_to_sequence=allele_sequences_in_use.to_dict())
+    tmp = allele_encoding.allele_representations('BLOSUM62')
+    print("BLOSUM62 SHAPE!!", tmp.shape, tmp)
+
+    mhcflurry_home = '/data/mhc/npz/'
+    with open(mhcflurry_home + "allele_encoding_all.pkl", "rb") as f:
+        allele_encoding = pickle.load(f)
+    full_allele_encoding = allele_encoding
+    print("LOADED OUR NEW CUSTOM ALLELE_ENCODING!")
 
     if not os.path.exists(args.out_models_dir):
         print("Attempting to create directory: %s" % args.out_models_dir)

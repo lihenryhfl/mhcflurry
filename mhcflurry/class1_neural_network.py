@@ -33,9 +33,9 @@ if os.environ.get("MHCFLURRY_DEFAULT_PREDICT_BATCH_SIZE"):
 class Class1NeuralNetwork(object):
     """
     Low level class I predictor consisting of a single neural network.
-    
+
     Both single allele and pan-allele prediction are supported.
-    
+
     Users will generally use Class1AffinityPredictor, which gives a higher-level
     interface and supports ensembles.
     """
@@ -349,7 +349,7 @@ class Class1NeuralNetwork(object):
     def get_config(self):
         """
         serialize to a dict all attributes except model weights
-        
+
         Returns
         -------
         dict
@@ -366,7 +366,7 @@ class Class1NeuralNetwork(object):
     def from_config(cls, config, weights=None, weights_loader=None):
         """
         deserialize from a dict returned by get_config().
-        
+
         Parameters
         ----------
         config : dict
@@ -401,7 +401,7 @@ class Class1NeuralNetwork(object):
     def get_weights(self):
         """
         Get the network weights
-        
+
         Returns
         -------
         list of numpy.array giving weights for each layer or None if there is no
@@ -414,7 +414,7 @@ class Class1NeuralNetwork(object):
     def __getstate__(self):
         """
         serialize to a dict. Model weights are included. For pickle support.
-        
+
         Returns
         -------
         dict
@@ -438,7 +438,7 @@ class Class1NeuralNetwork(object):
         """
         Encode peptides to the fixed-length encoding expected by the neural
         network (which depends on the architecture).
-        
+
         Parameters
         ----------
         peptides : EncodableSequences or list of string
@@ -457,7 +457,7 @@ class Class1NeuralNetwork(object):
     def supported_peptide_lengths(self):
         """
         (minimum, maximum) lengths of peptides supported, inclusive.
-        
+
         Returns
         -------
         (int, int) tuple
@@ -730,14 +730,14 @@ class Class1NeuralNetwork(object):
             progress_print_interval=5.0):
         """
         Fit the neural network.
-        
+
         Parameters
         ----------
         peptides : EncodableSequences or list of string
-        
+
         affinities : list of float
             nM affinities. Must be same length of as peptides.
-        
+
         allele_encoding : AlleleEncoding
             If not specified, the model will be a single-allele predictor.
 
@@ -1081,7 +1081,7 @@ class Class1NeuralNetwork(object):
         Parameters
         ----------
         peptides : EncodableSequences or list of string
-        
+
         allele_encoding : AlleleEncoding, optional
             Only required when this model is a pan-allele model
 
@@ -1094,7 +1094,7 @@ class Class1NeuralNetwork(object):
 
         Returns
         -------
-        numpy.array of nM affinity predictions 
+        numpy.array of nM affinity predictions
         """
         assert self.prediction_cache is not None
         use_cache = (
@@ -1111,10 +1111,12 @@ class Class1NeuralNetwork(object):
             (allele_encoding_input, allele_representations) = (
                 self.allele_encoding_to_network_input(allele_encoding))
             x_dict['allele'] = allele_encoding_input
+            print("SETTING ALLELE REPRESENTATIONS", allele_representations)
             self.set_allele_representations(allele_representations)
             network = self.network()
         else:
             network = self.network(borrow=True)
+        print(x_dict)
         raw_predictions = network.predict(x_dict, batch_size=batch_size)
         predictions = numpy.array(raw_predictions, dtype="float64")
         if output_index is not None:

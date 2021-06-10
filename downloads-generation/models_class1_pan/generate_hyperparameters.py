@@ -9,6 +9,8 @@ from yaml import dump
 base_hyperparameters = {
     'activation': 'tanh',
     'allele_dense_layer_sizes': [],
+    # 'allele_amino_acid_encoding': 'esm',
+    'allele_amino_acid_encoding': 'BLOSUM62',
     'batch_normalization': False,
     'dense_layer_l1_regularization': 0.0,
     'dense_layer_l2_regularization': 0.0,
@@ -58,19 +60,21 @@ base_hyperparameters = {
 }
 
 grid = []
-for layer_sizes in [[512, 256], [512, 512], [1024, 512], [1024, 1024]]:
-    l1_base = 0.0000001
-    for l1 in [l1_base, l1_base / 10, l1_base / 100, l1_base / 1000, 0.0]:
-        new = deepcopy(base_hyperparameters)
-        new["topology"] = 'feedforward'
-        new["layer_sizes"] = layer_sizes
-        new["dense_layer_l1_regularization"] = l1
-        if not grid or new not in grid:
-            grid.append(new)
+# for layer_sizes in [[512, 256], [512, 512], [1024, 512], [1024, 1024]]:
+    # l1_base = 0.0000001
+    # for l1 in [l1_base, l1_base / 10, l1_base / 100, l1_base / 1000, 0.0]:
+        # new = deepcopy(base_hyperparameters)
+        # new["topology"] = 'feedforward'
+        # new["layer_sizes"] = layer_sizes
+        # new["dense_layer_l1_regularization"] = l1
+        # if not grid or new not in grid:
+            # grid.append(new)
 
-for layer_sizes in [[256, 512], [256, 256, 512], [256, 512, 512]]:
+# for layer_sizes in [[256, 512], [256, 256, 512], [256, 512, 512]]:
+for layer_sizes in [[256, 256, 512]]:
     l1_base = 0.0000001
-    for l1 in [l1_base, l1_base / 10, l1_base / 100, l1_base / 1000, 0.0]:
+    # for l1 in [l1_base, l1_base / 10, l1_base / 100, l1_base / 1000, 0.0]:
+    for l1 in [l1_base / 100]:
         new = deepcopy(base_hyperparameters)
         new["topology"] = 'with-skip-connections'
         new["layer_sizes"] = layer_sizes
