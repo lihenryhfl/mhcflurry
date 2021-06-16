@@ -1111,7 +1111,6 @@ class Class1NeuralNetwork(object):
             (allele_encoding_input, allele_representations) = (
                 self.allele_encoding_to_network_input(allele_encoding))
             x_dict['allele'] = allele_encoding_input
-            print("SETTING ALLELE REPRESENTATIONS", allele_representations)
             self.set_allele_representations(allele_representations)
             network = self.network()
         else:

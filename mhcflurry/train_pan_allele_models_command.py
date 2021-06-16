@@ -308,8 +308,17 @@ def initialize_training(args):
     print("Loaded hyperparameters list:")
     pprint.pprint(hyperparameters_lst)
 
+    from mhcflurry.common import normalize_allele_name
+    def normalize_allele_name_optional(s):
+        try:
+            return normalize_allele_name(s)
+        except Exception as e:
+            print(e)
+            return s
+
     allele_sequences = pandas.read_csv(
         args.allele_sequences, index_col=0).iloc[:,0]
+    allele_sequences.index = allele_sequences.index.map(normalize_allele_name_optional)
 
     df = pandas.read_csv(args.data)
     print("Loaded training data: %s" % (str(df.shape)))
@@ -359,14 +368,6 @@ def initialize_training(args):
     allele_encoding = AlleleEncoding(
         alleles=allele_sequences_in_use.index.values,
         allele_to_sequence=allele_sequences_in_use.to_dict())
-    tmp = allele_encoding.allele_representations('BLOSUM62')
-    print("BLOSUM62 SHAPE!!", tmp.shape, tmp)
-
-    mhcflurry_home = '/data/mhc/npz/'
-    with open(mhcflurry_home + "allele_encoding_all.pkl", "rb") as f:
-        allele_encoding = pickle.load(f)
-    full_allele_encoding = allele_encoding
-    print("LOADED OUR NEW CUSTOM ALLELE_ENCODING!")
 
     if not os.path.exists(args.out_models_dir):
         print("Attempting to create directory: %s" % args.out_models_dir)

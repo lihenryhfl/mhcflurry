@@ -1,4 +1,5 @@
 import pandas
+import numpy as np
 
 from . import amino_acid
 
@@ -109,12 +110,56 @@ class AlleleEncoding(object):
             "allele_representations",
             encoding_name)
         if cache_key not in self.encoding_cache:
-            index_encoded_matrix = amino_acid.index_encoding(
-                self.sequences.values,
-                amino_acid.AMINO_ACID_INDEX)
-            vector_encoded = amino_acid.fixed_vectors_encoding(
-                index_encoded_matrix,
-                amino_acid.ENCODING_DATA_FRAMES[encoding_name])
+            if encoding_name in ['BLOSUM62', 'one-hot']:
+                index_encoded_matrix = amino_acid.index_encoding(
+                    self.sequences.values,
+                    amino_acid.AMINO_ACID_INDEX)
+                vector_encoded = amino_acid.fixed_vectors_encoding(
+                    index_encoded_matrix,
+                    amino_acid.ENCODING_DATA_FRAMES[encoding_name])
+            elif encoding_name in ['blosum62', 'esm', 'esm_mean']:
+                mhcflurry_home = '/data/mhc/npz/'
+                allele_names = np.load(mhcflurry_home + 'allele_names_universe.npz')
+                mhc_str = np.load(mhcflurry_home + 'mhc_str_universe.npz')
+                mhc_pseudo_str = np.load(mhcflurry_home + 'mhc_pseudo_str_universe.npz')
+                if encoding_name == 'esm':
+                    # vector_encoded = np.load(mhcflurry_home + 'mhc_feat_all_esm.npz')
+                    raise NotImplementedError
+                elif encoding_name == 'blosum62':
+                    vector_encoded = np.load(mhcflurry_home + 'mhc_pseudo_feat_universe_blosum62.npz')
+                else:
+                    vector_encoded = np.load(mhcflurry_home + 'mhc_feat_universe_esm_mean.npz')
+
+                # check that the loaded alleles are in the same order as the object's alleles
+                print(self.allele_to_index)
+                allele_to_index_list = [(self.allele_to_index[allele], allele) for allele in self.allele_to_index]
+                sorted_allele_to_index_list = sorted(allele_to_index_list, key=lambda x: x[0])
+                # remove none
+                assert sorted_allele_to_index_list[0][0] == 0 and sorted_allele_to_index_list[0][1] is None
+                sorted_allele_to_index_list.pop(0)
+
+                new_allele_to_index = dict([(allele, i) for (i, allele) in enumerate(allele_names)])
+                new_allele_to_pseudo_str = dict([(allele, allele_str) for (allele_str, allele) in zip(mhc_pseudo_str, allele_names)])
+                print([x[1] for x in sorted_allele_to_index_list])
+                true_idx = [new_allele_to_index[x[1]] for x in sorted_allele_to_index_list]
+                our_str = [new_allele_to_pseudo_str[x[1]] for x in sorted_allele_to_index_list]
+                orig_str = [self.allele_to_sequence[x[1]] for x in sorted_allele_to_index_list]
+                for s1, s2 in zip(our_str, orig_str):
+                    if s1 != s2:
+                        print(s1)
+                        print(s2)
+                        print('\n')
+                print([ours == orig for ours, orig in zip(our_str, orig_str)])
+                assert all([ours == orig for ours, orig in zip(our_str, orig_str)]), str([ours == orig for ours, orig in zip(our_str, orig_str)]) + '\n' + str([len(x) for x in orig_str])
+
+                true_idx = np.array(true_idx).astype(int)
+                print('true_idx', true_idx)
+                vector_encoded = vector_encoded[true_idx]
+                # add the unknown vector back in (all zeros)
+                tmp = np.zeros_like(vector_encoded[0:1])
+                vector_encoded = np.concatenate([tmp, vector_encoded], axis=0)
+
+                print("LOADED OUR NEW CUSTOM ALLELE_ENCODING!")
             self.encoding_cache[cache_key] = vector_encoded
         return self.encoding_cache[cache_key]
 

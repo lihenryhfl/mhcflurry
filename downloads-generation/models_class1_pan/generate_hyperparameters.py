@@ -9,7 +9,8 @@ from yaml import dump
 base_hyperparameters = {
     'activation': 'tanh',
     'allele_dense_layer_sizes': [],
-    # 'allele_amino_acid_encoding': 'esm',
+    # 'allele_amino_acid_encoding': 'esm_mean',
+    # 'allele_amino_acid_encoding': 'blosum62',
     'allele_amino_acid_encoding': 'BLOSUM62',
     'batch_normalization': False,
     'dense_layer_l1_regularization': 0.0,
