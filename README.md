@@ -2,7 +2,8 @@
 
 # Henry's Notes
 To run the pan model training, go to `mhcflurry/downloads-generation/models_class1_pan`, and run one of the GENERATE shell files after setting `CUDA_VISIBLE_DEVICES`, e.g.
-`CUDA_VISIBLE_DEVICES='1' ./GENERATE.sh'.
+
+       CUDA_VISIBLE_DEVICES='1' ./GENERATE.sh
 
 # mhcflurry
 [MHC I](https://en.wikipedia.org/wiki/MHC_class_I) ligand
