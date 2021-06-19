@@ -95,7 +95,7 @@ do
         --allele-sequences "$ALLELE_SEQUENCES" \
         --pretrain-data "$(mhcflurry-downloads path random_peptide_predictions)/predictions.csv.bz2" \
         --held-out-measurements-per-allele-fraction-and-max 0.25 100 \
-        --num-folds 4 \
+        --num-folds 1 \
         --hyperparameters "$HYPERPARAMETERS" \
         --out-models-dir $(pwd)/models.unselected.${kind} \
         --worker-log-dir "$SCRATCH_DIR/$DOWNLOAD_NAME" \
