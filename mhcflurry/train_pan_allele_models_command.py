@@ -440,6 +440,8 @@ def train_models(args):
         GLOBAL_DATA.update(pickle.load(fd))
     print("Loaded training init info.")
 
+    # raise Exception('args.out_models_dir: ' + str(args.out_models_dir))
+
     all_work_items = GLOBAL_DATA["work_items"]
     complete_work_item_names = [
         network.fit_info[-1]["training_info"]["work_item_name"] for network in
@@ -636,6 +638,8 @@ def train_model(
                 allele_encoding,
                 peptides_per_chunk=pretrain_peptides_per_step)
 
+            print("IMPORTANT TRAIN_ALLELES", train_alleles)
+            # raise Exception(str(train_alleles.alleles))
             model.fit_generator(
                 generator,
                 validation_peptide_encoding=train_peptides,
