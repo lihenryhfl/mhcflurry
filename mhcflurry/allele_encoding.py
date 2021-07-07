@@ -131,7 +131,7 @@ class AlleleEncoding(object):
                     vector_encoded = np.load(mhcflurry_home + 'mhc_feat_all_esm_mean.npy')
 
                 # check that the loaded alleles are in the same order as the object's alleles
-                print(self.allele_to_index)
+                # print(self.allele_to_index)
                 allele_to_index_list = [(self.allele_to_index[allele], allele) for allele in self.allele_to_index]
                 sorted_allele_to_index_list = sorted(allele_to_index_list, key=lambda x: x[0])
                 # remove none
@@ -140,16 +140,27 @@ class AlleleEncoding(object):
 
                 new_allele_to_index = dict([(allele, i) for (i, allele) in enumerate(allele_names)])
                 new_allele_to_pseudo_str = dict([(allele, allele_str) for (allele_str, allele) in zip(mhc_pseudo_str, allele_names)])
-                print([x[1] for x in sorted_allele_to_index_list])
-                true_idx = [new_allele_to_index[x[1]] for x in sorted_allele_to_index_list]
-                our_str = [new_allele_to_pseudo_str[x[1]] for x in sorted_allele_to_index_list]
-                orig_str = [self.allele_to_sequence[x[1]] for x in sorted_allele_to_index_list]
+                # print([x[1] for x in sorted_allele_to_index_list])
+
+                def debug_name(name_str):
+                    if 'Mafa-B*0' in name_str:
+                        str1, str2 = name_str.split('*')
+                        str2, str3 = str2.split(':')
+                        if len(str2) == 3:
+                            str2 = str2[1:]
+                            name_str = str1 + '*' + str2 + ':' + str3
+
+                    return name_str
+
+                true_idx = [new_allele_to_index[debug_name(x[1])] for x in sorted_allele_to_index_list]
+                our_str = [new_allele_to_pseudo_str[debug_name(x[1])] for x in sorted_allele_to_index_list]
+                orig_str = [self.allele_to_sequence[debug_name(x[1])] for x in sorted_allele_to_index_list]
                 for s1, s2 in zip(our_str, orig_str):
                     if s1 != s2:
                         print(s1)
                         print(s2)
                         print('\n')
-                print([ours == orig for ours, orig in zip(our_str, orig_str)])
+                # print([ours == orig for ours, orig in zip(our_str, orig_str)])
                 assert all([ours == orig for ours, orig in zip(our_str, orig_str)]), str([ours == orig for ours, orig in zip(our_str, orig_str)]) + '\n' + str([len(x) for x in orig_str])
 
                 true_idx = np.array(true_idx).astype(int)
