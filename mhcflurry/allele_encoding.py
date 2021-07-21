@@ -117,18 +117,12 @@ class AlleleEncoding(object):
                 vector_encoded = amino_acid.fixed_vectors_encoding(
                     index_encoded_matrix,
                     amino_acid.ENCODING_DATA_FRAMES[encoding_name])
-            elif encoding_name in ['blosum62', 'esm', 'esm_mean', 'protbert_mean', 'tape_mean']:
+            elif encoding_name in ['blosum62', 'esm_mean', 'protbert_mean', 'tape_mean']:
                 mhcflurry_home = '/data/mhc/npz/'
                 allele_names = np.load(mhcflurry_home + 'orig_allele_names_all.npy')
                 mhc_str = np.load(mhcflurry_home + 'mhc_str_all.npy')
                 mhc_pseudo_str = np.load(mhcflurry_home + 'mhc_pseudo_str_all.npy')
-                if encoding_name == 'esm':
-                    # vector_encoded = np.load(mhcflurry_home + 'mhc_feat_all_esm.npy')
-                    raise NotImplementedError
-                elif encoding_name == 'blosum62':
-                    vector_encoded = np.load(mhcflurry_home + 'mhc_pseudo_feat_all_blosum62.npy')
-                else:
-                    vector_encoded = np.load(mhcflurry_home + 'mhc_feat_all_esm_mean.npy')
+                vector_encoded = np.load(mhcflurry_home + 'mhc_feat_all_{}.npy'.format(encoding_name))
 
                 # check that the loaded alleles are in the same order as the object's alleles
                 # print(self.allele_to_index)
