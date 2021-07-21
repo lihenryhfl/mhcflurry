@@ -82,13 +82,13 @@ time clustalo -i class1.fasta -o class1.aligned.fasta
 
 time python make_allele_sequences.py \
     class1.aligned.fasta \
-    --recapitulate-sequences class1_pseudosequences.csv \
+    #--recapitulate-sequences class1_pseudosequences.csv \
     --differentiate-alleles training_data.alleles.txt \
     --out-csv allele_sequences.csv
 
 time python make_allele_sequences.py \
     class1.aligned.fasta \
-    --recapitulate-sequences class1_pseudosequences.csv \
+    #--recapitulate-sequences class1_pseudosequences.csv \
     --out-csv allele_sequences.no_differentiation.csv
 
 # Cleanup

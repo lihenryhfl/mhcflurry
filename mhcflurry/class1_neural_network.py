@@ -1115,7 +1115,7 @@ class Class1NeuralNetwork(object):
             network = self.network()
         else:
             network = self.network(borrow=True)
-        print(x_dict)
+        # print(x_dict)
         raw_predictions = network.predict(x_dict, batch_size=batch_size)
         predictions = numpy.array(raw_predictions, dtype="float64")
         if output_index is not None:

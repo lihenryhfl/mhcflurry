@@ -153,18 +153,21 @@ class AlleleEncoding(object):
                     return name_str
 
                 true_idx = [new_allele_to_index[debug_name(x[1])] for x in sorted_allele_to_index_list]
-                our_str = [new_allele_to_pseudo_str[debug_name(x[1])] for x in sorted_allele_to_index_list]
-                orig_str = [self.allele_to_sequence[debug_name(x[1])] for x in sorted_allele_to_index_list]
-                for s1, s2 in zip(our_str, orig_str):
-                    if s1 != s2:
-                        print(s1)
-                        print(s2)
-                        print('\n')
-                # print([ours == orig for ours, orig in zip(our_str, orig_str)])
-                assert all([ours == orig for ours, orig in zip(our_str, orig_str)]), str([ours == orig for ours, orig in zip(our_str, orig_str)]) + '\n' + str([len(x) for x in orig_str])
+                try:
+                    our_str = [new_allele_to_pseudo_str[debug_name(x[1])] for x in sorted_allele_to_index_list]
+                    orig_str = [self.allele_to_sequence[x[1]] for x in sorted_allele_to_index_list]
+                    for s1, s2 in zip(our_str, orig_str):
+                        if s1 != s2:
+                            print(s1)
+                            print(s2)
+                            print('\n')
+                    # print([ours == orig for ours, orig in zip(our_str, orig_str)])
+                    # assert all([ours == orig for ours, orig in zip(our_str, orig_str)]), + '\n' + str([len(x) for x in orig_str])
+                except KeyError as ke:
+                    print('Key Error!', ke)
 
                 true_idx = np.array(true_idx).astype(int)
-                print('true_idx', true_idx)
+                # print('true_idx', true_idx)
                 vector_encoded = vector_encoded[true_idx]
                 # add the unknown vector back in (all zeros)
                 tmp = np.zeros_like(vector_encoded[0:1])
