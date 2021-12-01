@@ -964,6 +964,7 @@ class Class1NeuralNetwork(object):
 
             if not x_dict_with_random_negatives:
                 if len(random_negative_peptides) > 0:
+                    assert False
                     x_dict_with_random_negatives[
                         "peptide"
                     ] = numpy.concatenate([

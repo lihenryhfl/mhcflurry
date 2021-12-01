@@ -24,17 +24,17 @@ class RandomNegativePeptides(object):
         random_negative_lengths=[8,9,10,11,12,13,14,15])
     """
     Hyperperameters for random negative peptides.
-    
+
     Number of random negatives will be:
         random_negative_rate * (num measurements) + random_negative_constant
-        
+
     where the exact meaning of (num measurements) depends on the particular
     random_negative_method in use.
-    
+
     If random_negative_match_distribution is True, then the amino acid
     frequencies of the training data peptides are used to generate the
     random peptides.
-    
+
     Valid values for random_negative_method are:
         "by_length": used for allele-specific prediction. See description in
             `RandomNegativePeptides.plan_by_length` method.
@@ -43,13 +43,13 @@ class RandomNegativePeptides(object):
         "by_allele_equalize_nonbinders": used for pan-allele prediction. See
             `RandomNegativePeptides.plan_by_allele_equalize_nonbinders` method.
         "recommended": the default. Use by_length if the predictor is allele-
-            specific and by_allele if it's pan-allele.    
-        
+            specific and by_allele if it's pan-allele.
     """
 
     def __init__(self, **hyperparameters):
         self.hyperparameters = self.hyperparameter_defaults.with_defaults(
             hyperparameters)
+        assert self.hyperparameters['random_negative_rate'] == 0.0 and self.hyperparameters['random_negative_constant'] == 0
         self.plan_df = None
         self.aa_distribution = None
 
@@ -70,6 +70,7 @@ class RandomNegativePeptides(object):
         pandas.DataFrame indicating number of random negatives for each length
         and allele.
         """
+        assert self.hyperparameters['random_negative_rate'] == 0.0 and self.hyperparameters['random_negative_constant'] == 0
         numpy.testing.assert_equal(len(peptides), len(affinities))
         if alleles is not None:
             numpy.testing.assert_equal(len(peptides), len(alleles))
@@ -244,6 +245,7 @@ class RandomNegativePeptides(object):
         -------
         list of string
         """
+        assert self.hyperparameters['random_negative_rate'] == 0.0 and self.hyperparameters['random_negative_constant'] == 0
         assert self.plan_df is not None, "Call plan() first"
         alleles = []
         for allele, row in self.plan_df.iterrows():
@@ -261,6 +263,7 @@ class RandomNegativePeptides(object):
         list of string
 
         """
+        assert self.hyperparameters['random_negative_rate'] == 0.0 and self.hyperparameters['random_negative_constant'] == 0
         assert self.plan_df is not None, "Call plan() first"
         peptides = []
         for allele, row in self.plan_df.iterrows():
